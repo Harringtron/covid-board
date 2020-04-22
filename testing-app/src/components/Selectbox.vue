@@ -1,15 +1,11 @@
 <template>
   <!-- Selectbox -->
-  <div class="container" :ref="name" v-click-outside="[name, 'countryCombobox']">
-    <div class="selectbox-class" @click="showOptions = !showOptions">
-      <span>{{ inputText !== "" ? inputText : placeholder }}</span>
-      <div class="arrow"></div>
-    </div>
-    <!-- <textbox name="countryCombobox" :placeholder="placeholder" @click="showOptions = !showOptions"></textbox> -->
-    <!-- Value Range -->
+  <div class="container" :ref="name" v-click-outside="[name]">
+    <input class="input-class" v-model="inputText" :placeholder="placeholder"/>
+    <div class="arrow" @click="inputClicked"></div>
     <ul class="option-container" v-if="showOptions && valueRange.length > 0">
       <li
-        v-for="(option, index) in options"
+        v-for="(option, index) in filteredOptions"
         v-bind:key="index"
         :class="optionClass(index)"
         :id="option.value"
@@ -24,11 +20,10 @@
 </template>
 
 <script>
-// import Textbox from "./Textbox.vue";
 
 export default {
   name: "Selectbox",
-  components: {  },
+  components: { },
   data() {
     return {
       selectedOption: null,
@@ -44,7 +39,13 @@ export default {
     showValues: { type: Boolean, default: false },
     valueRange: { type: Array, required: true }
   },
-  computed: {},
+  computed: {
+    filteredOptions: function() {
+      return this.valueRange.filter(option => {
+        return option.name.toUpperCase().includes(this.inputText.toUpperCase());
+      });
+    }
+  },
   methods: {
     optionClass: function(index) {
       return index === this.hoveredIndex ? "hovered-option" : "option";
@@ -59,6 +60,9 @@ export default {
     },
     clickedOutside: function() {
       this.showOptions = false;
+    },
+    inputClicked: function() {
+      this.showOptions = !this.showOptions;
     }
   },
   watch: {
@@ -74,14 +78,12 @@ export default {
 
 <style>
 .container {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
   position: relative;
   width: 250px;
   color: rgba(0, 0, 0, 0.5);
 }
-.selectbox-class {
+.input-class {
+  color: rgba(0, 0, 0, 0.5);
   font-family: sans-serif;
   font-size: 90%;
   display: flex;
@@ -90,17 +92,15 @@ export default {
   padding: 0.5rem 1rem 0.5rem;
   border: 2px solid rgba(0, 0, 0, 0.4);
   border-radius: 3px;
-  user-select: none;
+  width: 215px;
 }
-.selectbox-class:focus {
-  outline: none;
-}
-.selectbox-class:hover {
-  cursor: default;
+.container:hover {
+  cursor: pointer;
 }
 .arrow {
-  top: 3px;
-  position: relative;
+  top: 13px;
+  right: 10px;
+  position: absolute;
   align-content: right;
   border-right: 2px solid rgba(0, 0, 0, 0.4);
   border-bottom: 2px solid rgba(0, 0, 0, 0.4);

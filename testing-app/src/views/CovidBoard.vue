@@ -25,7 +25,6 @@ export default {
       this.covidData.Countries.forEach(record =>
         this.countries.push({ name: record.Country, value: record.Slug })
       );
-      console.log(result.data);
     });
   }
 };

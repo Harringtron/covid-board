@@ -1,8 +1,8 @@
 <template>
   <!-- Selectbox -->
-  <div class="container" :ref="name" v-click-outside="[name]">
+  <div class="container" :ref="name" v-click-outside="[name]" @click="showOptions = !showOptions">
     <input class="input-class" v-model="inputText" :placeholder="placeholder"/>
-    <div class="arrow" @click="inputClicked"></div>
+    <div class="arrow"></div>
     <ul class="option-container" v-if="showOptions && valueRange.length > 0">
       <li
         v-for="(option, index) in filteredOptions"

@@ -1,8 +1,14 @@
 <template>
   <!-- Selectbox -->
-  <div class="container" :ref="name" v-click-outside="[name]" @click="showOptions = !showOptions">
-    <input class="input-class" v-model="inputText" :placeholder="placeholder"/>
-    <div class="arrow"></div>
+  <div class="container" v-click-outside="[name]">
+    <input
+      class="input-class"
+      :ref="name"
+      v-model="inputText"
+      :placeholder="placeholder"
+      @click="showOptions = !showOptions"
+    />
+    <div :class="iconClass" @click="iconClicked"></div>
     <ul class="option-container" v-if="showOptions && valueRange.length > 0">
       <li
         v-for="(option, index) in filteredOptions"
@@ -20,10 +26,9 @@
 </template>
 
 <script>
-
 export default {
   name: "Selectbox",
-  components: { },
+  components: {},
   data() {
     return {
       selectedOption: null,
@@ -44,6 +49,9 @@ export default {
       return this.valueRange.filter(option => {
         return option.name.toUpperCase().includes(this.inputText.toUpperCase());
       });
+    },
+    iconClass: function() {
+      return this.inputText !== "" ? "close-icon" : "arrow-icon";
     }
   },
   methods: {
@@ -63,6 +71,15 @@ export default {
     },
     inputClicked: function() {
       this.showOptions = !this.showOptions;
+    },
+    iconClicked: function() {
+      if (this.inputText !== "") {
+        this.inputText = "";
+        this.selectedOption = null;
+        this.showOptions = true;
+      } else {
+        this.showOptions = !this.showOptions;
+      }
     }
   },
   watch: {
@@ -93,11 +110,12 @@ export default {
   border: 2px solid rgba(0, 0, 0, 0.4);
   border-radius: 3px;
   width: 215px;
+  cursor: pointer;
 }
 .container:hover {
   cursor: pointer;
 }
-.arrow {
+.arrow-icon {
   top: 13px;
   right: 10px;
   position: absolute;
@@ -107,6 +125,26 @@ export default {
   width: 5px;
   height: 5px;
   transform: rotate(45deg);
+}
+.close-icon {
+  position: absolute;
+  top: 12px;
+  right: 30px;
+}
+.close-icon:before,
+.close-icon:after {
+  position: absolute;
+  left: 15px;
+  content: " ";
+  height: 12px;
+  width: 2px;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.close-icon:before {
+  transform: rotate(45deg);
+}
+.close-icon:after {
+  transform: rotate(-45deg);
 }
 .option-container {
   min-width: 100%;

@@ -8,26 +8,29 @@
       placeholder="Select a Country"
       @change="onCountrySelect"
     />
-    <h2
+    <display-panel
       v-if="selectedCountryData !== null"
+      :displayData="displayArray"
       class="header"
-    >Here are some Coronavirus stats for {{selectedCountryData.Country}}</h2>
+      :titleString="'Here are some Coronavirus stats for ' + selectedCountryData.Country"
+    ></display-panel>
   </div>
 </template>
 
 <script>
 import Selectbox from "../components/Selectbox.vue";
-// import Textbox from "../components/Textbox.vue";
+import DisplayPanel from "../components/DisplayPanel.vue";
 
 let covidUri = "https://api.covid19api.com/summary";
 
 export default {
-  components: { Selectbox },
+  components: { Selectbox, DisplayPanel },
   data() {
     return {
       covidData: {},
       countries: [],
-      selectedCountryData: null
+      selectedCountryData: null,
+      displayArray: [],
     };
   },
   beforeMount: function() {
@@ -44,9 +47,26 @@ export default {
         this.selectedCountryData = this.covidData.Countries.find(
           country => country.Slug === object.value
         );
+        this.displayArray = this.createDisplayArray();
       } else {
         this.selectedCountryData = null;
       }
+    },
+    createDisplayArray: function() {
+      let array = [];
+      for (let [name, value] of Object.entries(this.selectedCountryData)) {
+        array.push({
+          name: name,
+          value: value
+        });
+      }
+      console.log({array});
+      return array;
+    }
+  },
+  computed: {
+    displayData: function () {
+      return [];
     }
   }
 };

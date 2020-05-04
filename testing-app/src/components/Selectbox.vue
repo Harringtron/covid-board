@@ -12,7 +12,7 @@
     <ul class="option-container" v-if="showOptions && valueRange.length > 0">
       <li
         v-for="(option, index) in filteredOptions"
-        v-bind:key="index"
+        :key="index"
         :class="optionClass(index)"
         :id="option.value"
         @click="optionClicked(option)"
@@ -77,6 +77,7 @@ export default {
         this.inputText = "";
         this.selectedOption = null;
         this.showOptions = true;
+        this.$refs[this.name].focus();
       } else {
         this.showOptions = !this.showOptions;
       }
